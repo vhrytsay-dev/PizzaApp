@@ -3,4 +3,12 @@
     <string name="title_activity_bottom_navigation">BottomNavigationActivity</string>
     <string name="title_home">Home</string>
     <string name="title_dashboard">Pizzas</string>
+    <string name="welcome_text">Welcome</string>
+    <string name="add">addButton</string>
+    <string name="addNewPizza">Add new Pizza</string>
+    <string name="name">Name</string>
+    <string name="message">Please add name and description for new Pizza</string>
+    <string name="description">Description</string>
+    <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
 </resources>

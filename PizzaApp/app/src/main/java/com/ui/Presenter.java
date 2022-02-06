@@ -1,22 +1,36 @@
 package com.ui;
 
-import com.model.PizzaAppModel;
+import androidx.fragment.app.FragmentActivity;
+import com.model.MenuViewModel;
+import java.util.List;
+import org.apache.commons.lang3.StringUtils;
 
 public class Presenter {
 
-    AppView appView;
-    private PizzaAppModel pizzaAppModel = new PizzaAppModel();
+    private IMenuFragmentView appView;
+    private MenuViewModel menuModel;
 
-    public Presenter(AppView appView){
+    public Presenter(IMenuFragmentView appView, FragmentActivity activity){
         this.appView = appView;
+        menuModel = new MenuViewModel(activity);
     }
 
-    public String getName(){
-        return pizzaAppModel.getName();
+    public void setDataToListview() {
+        List<String> list = menuModel.getListFromDatabase();
+        appView.setDataToListview(list);
     }
 
-    public String getDescription(){
-        return pizzaAppModel.getDescription();
+    public String addPizza(String name, String description) {
+        if (StringUtils.isNotEmpty(name)){
+            menuModel.addToList(name, description);
+            appView.update();
+            return "Pizza " + name + " added to List";
+        }else{
+            return "Please enter name";
+        }
     }
 
+    public String getDescription(String name){
+        return menuModel.getDescription(name);
+    }
 }

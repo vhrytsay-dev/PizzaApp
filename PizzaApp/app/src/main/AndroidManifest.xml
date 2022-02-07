@@ -10,7 +10,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.PizzaApp">
         <activity
-            android:name="com.ui.BottomNavigationActivity"
+            android:name="com.view.BottomNavigationActivity"
             android:exported="true"
             android:label="@string/app_name">
             <intent-filter>

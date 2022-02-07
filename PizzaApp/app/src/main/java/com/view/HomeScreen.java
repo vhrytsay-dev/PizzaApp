@@ -1,4 +1,4 @@
-package com.ui;
+package com.view;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -7,12 +7,10 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 
-import com.model.HomeViewModel;
 import com.pizzaapp.databinding.FragmentHomeBinding;
 
-public class HomeFragment extends Fragment {
+public class HomeScreen extends Fragment {
 
     private FragmentHomeBinding binding;
 

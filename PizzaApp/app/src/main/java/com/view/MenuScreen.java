@@ -1,4 +1,4 @@
-package com.ui;
+package com.view;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -19,24 +19,23 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
-import com.google.android.material.textfield.TextInputEditText;
 import com.pizzaapp.R;
 
 import java.util.List;
 
-public class MenuFragment extends Fragment implements IMenuFragmentView{
+public class MenuScreen extends Fragment implements IPizzaAppMVP.IMenuFragment {
 
     private ArrayAdapter<String> arrayAdapter;
     private View view;
     private ListView mListview;
-    private Presenter presenter;
+    private MenuScreenPresenter presenter;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_menu, container, false);
         setHasOptionsMenu(true);
         mListview = (ListView) view.findViewById(R.id.listview);
-        presenter = new Presenter(this, getActivity());
+        presenter = new MenuScreenPresenter(this, getActivity());
         presenter.setDataToListview();
         mListview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -76,16 +75,11 @@ public class MenuFragment extends Fragment implements IMenuFragmentView{
         mListview.setAdapter(arrayAdapter);
     }
 
-    //TODO Update ListView after adding list item
-    @Override
-    public void update() {
-        onResume();
-    }
 
     private void addPizzaDialog(){
         EditText textInputNameText = new EditText(getActivity());
         textInputNameText.setHint(R.string.name);
-        TextInputEditText textInputDescriptionText = new TextInputEditText(getActivity());
+        EditText textInputDescriptionText = new EditText(getActivity());
         textInputDescriptionText.setHint(R.string.description);
         LinearLayout linLay = new LinearLayout(getActivity());
         linLay.setOrientation(LinearLayout.VERTICAL);

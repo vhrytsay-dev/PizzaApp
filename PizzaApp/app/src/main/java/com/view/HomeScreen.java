@@ -8,16 +8,15 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
-import com.pizzaapp.databinding.FragmentHomeBinding;
+import com.pizzaapp.R;
 
 public class HomeScreen extends Fragment {
 
-    private FragmentHomeBinding binding;
+    View root;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        binding = FragmentHomeBinding.inflate(inflater, container, false);
-        View root = binding.getRoot();
+        root = inflater.inflate(R.layout.home_screen_layout, container, false);
 
         return root;
     }
@@ -25,6 +24,6 @@ public class HomeScreen extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        binding = null;
+        root = null;
     }
 }

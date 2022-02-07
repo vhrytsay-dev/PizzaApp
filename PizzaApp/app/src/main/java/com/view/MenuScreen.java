@@ -1,6 +1,7 @@
 package com.view;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -19,28 +20,32 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.material.textfield.TextInputEditText;
 import com.pizzaapp.R;
 
 import java.util.List;
 
-public class MenuScreen extends Fragment implements IPizzaAppMVP.IMenuFragment {
+public class MenuScreen extends Fragment implements IPizzaAppMVP.IMenuScreen {
 
     private ArrayAdapter<String> arrayAdapter;
     private View view;
     private ListView mListview;
-    private MenuScreenPresenter presenter;
+    private MenuScreenScreenPresenter presenter;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_menu, container, false);
+        view = inflater.inflate(R.layout.menu_screen_layout, container, false);
         setHasOptionsMenu(true);
         mListview = (ListView) view.findViewById(R.id.listview);
-        presenter = new MenuScreenPresenter(this, getActivity());
+        presenter = new MenuScreenScreenPresenter(this, getActivity());
         presenter.setDataToListview();
         mListview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(getContext(), presenter.getDescription(parent.getItemAtPosition(position).toString()), Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(getActivity(), PizzaDescriptionScreen.class);
+                intent.putExtra("name", parent.getItemAtPosition(position).toString());
+                intent.putExtra("description", presenter.getDescription(parent.getItemAtPosition(position).toString()));
+                getActivity().startActivity(intent);
             }
         });
         return view;
@@ -56,7 +61,6 @@ public class MenuScreen extends Fragment implements IPizzaAppMVP.IMenuFragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId() == R.id.add_btn){
             addPizzaDialog();
-            //
             return true;
         }
         return super.onOptionsItemSelected(item);

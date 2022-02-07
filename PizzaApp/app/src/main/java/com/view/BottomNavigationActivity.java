@@ -1,4 +1,4 @@
-package com.ui;
+package com.view;
 
 import android.os.Bundle;
 

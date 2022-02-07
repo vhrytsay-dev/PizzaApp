@@ -5,10 +5,10 @@ import androidx.lifecycle.ViewModel;
 
 import java.util.List;
 
-public class MenuViewModel extends ViewModel {
+public class MenuScreenModel extends ViewModel {
     private DatabaseHelper databaseHelper;
 
-    public MenuViewModel(FragmentActivity activity) {
+    public MenuScreenModel(FragmentActivity activity) {
         databaseHelper = new DatabaseHelper(activity);
     }
 

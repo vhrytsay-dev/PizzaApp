@@ -13,11 +13,13 @@
         <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.19" />
         <entry key="app/src/main/res/drawable/ic_notifications_black_24dp.xml" value="0.19" />
         <entry key="app/src/main/res/drawable/icon_1.xml" value="0.3105" />
+        <entry key="app/src/main/res/layout/add_new_pizza_window.xml" value="0.33" />
         <entry key="app/src/main/res/layout/bottom_navigation_activity_layout.xml" value="0.22" />
         <entry key="app/src/main/res/layout/fragment_dashboard.xml" value="0.18177083333333333" />
         <entry key="app/src/main/res/layout/fragment_home.xml" value="0.18177083333333333" />
         <entry key="app/src/main/res/layout/fragment_menu.xml" value="0.16" />
         <entry key="app/src/main/res/layout/fragment_notifications.xml" value="0.18177083333333333" />
+        <entry key="app/src/main/res/layout/home_screen_layout.xml" value="0.23489583333333333" />
         <entry key="app/src/main/res/layout/mail_activity_layout.xml" value="0.17325227963525835" />
         <entry key="app/src/main/res/layout/main_activity_layout.xml" value="0.2" />
         <entry key="app/src/main/res/layout/menu_screen_layout.xml" value="0.2046875" />

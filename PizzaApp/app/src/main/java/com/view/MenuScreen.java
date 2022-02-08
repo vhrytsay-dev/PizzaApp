@@ -1,5 +1,6 @@
 package com.view;
 
+import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -23,31 +24,27 @@ import androidx.fragment.app.Fragment;
 import com.google.android.material.textfield.TextInputEditText;
 import com.pizzaapp.R;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.List;
 
 public class MenuScreen extends Fragment implements IPizzaAppMVP.IMenuScreen {
 
     private ArrayAdapter<String> arrayAdapter;
     private View view;
+    private View addView;
     private ListView mListview;
     private MenuScreenScreenPresenter presenter;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.menu_screen_layout, container, false);
+        addView = inflater.inflate(R.layout.add_new_pizza_window, container, false);
         setHasOptionsMenu(true);
         mListview = (ListView) view.findViewById(R.id.listview);
         presenter = new MenuScreenScreenPresenter(this, getActivity());
         presenter.setDataToListview();
-        mListview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(getActivity(), PizzaDescriptionScreen.class);
-                intent.putExtra("name", parent.getItemAtPosition(position).toString());
-                intent.putExtra("description", presenter.getDescription(parent.getItemAtPosition(position).toString()));
-                getActivity().startActivity(intent);
-            }
-        });
+        listViewItemsListener();
         return view;
     }
 
@@ -79,8 +76,11 @@ public class MenuScreen extends Fragment implements IPizzaAppMVP.IMenuScreen {
         mListview.setAdapter(arrayAdapter);
     }
 
-
+    //TODO replace with add_new_pizza layout
     private void addPizzaDialog(){
+        //EditText nameField = addView.findViewById(R.id.textInputNameText);
+        //EditText descriptionField = addView.findViewById(R.id.textInputDescriptionText);
+        //LinearLayout inputFieldsLayout = addView.findViewById(R.id.linLayout);
         EditText textInputNameText = new EditText(getActivity());
         textInputNameText.setHint(R.string.name);
         EditText textInputDescriptionText = new EditText(getActivity());
@@ -97,7 +97,7 @@ public class MenuScreen extends Fragment implements IPizzaAppMVP.IMenuScreen {
             .setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    String message = presenter.addPizza((textInputNameText.getText().toString()), (textInputDescriptionText).getText().toString());
+                    String message = presenter.addPizza((textInputNameText.getText().toString()), (textInputDescriptionText.getText().toString()));
                     Toast toast = Toast.makeText(getContext(), message, Toast.LENGTH_LONG);
                     toast.show();
                 }
@@ -106,5 +106,17 @@ public class MenuScreen extends Fragment implements IPizzaAppMVP.IMenuScreen {
             public void onClick(DialogInterface dialog, int which) {
             }
         }).show();
+    }
+
+    private void listViewItemsListener() {
+        mListview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(getActivity(), PizzaDescriptionScreen.class);
+                intent.putExtra("name", parent.getItemAtPosition(position).toString());
+                intent.putExtra("description", presenter.getDescription(parent.getItemAtPosition(position).toString()));
+                getActivity().startActivity(intent);
+            }
+        });
     }
 }

@@ -5,12 +5,12 @@ import com.model.MenuScreenModel;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 
-public class MenuScreenPresenter implements IPizzaAppMVP.IMenuPresenter {
+public class MenuScreenScreenPresenter implements IPizzaAppMVP.IMenuScreenPresenter {
 
-    private IPizzaAppMVP.IMenuFragment appView;
+    private IPizzaAppMVP.IMenuScreen appView;
     private MenuScreenModel menuModel;
 
-    public MenuScreenPresenter(IPizzaAppMVP.IMenuFragment appView, FragmentActivity activity){
+    public MenuScreenScreenPresenter(IPizzaAppMVP.IMenuScreen appView, FragmentActivity activity){
         this.appView = appView;
         menuModel = new MenuScreenModel(activity);
     }

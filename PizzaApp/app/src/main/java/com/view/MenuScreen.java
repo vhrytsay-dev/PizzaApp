@@ -35,11 +35,17 @@ public class MenuScreen extends Fragment implements IPizzaAppMVP.IMenuScreen {
     private View addView;
     private ListView mListview;
     private MenuScreenScreenPresenter presenter;
+    private LinearLayout inputFieldsLayout;
+    private EditText nameField;
+    private EditText descriptionField;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.menu_screen_layout, container, false);
         addView = inflater.inflate(R.layout.add_new_pizza_window, container, false);
+        inputFieldsLayout = addView.findViewById(R.id.linLayout);
+        nameField = addView.findViewById(R.id.textInputNameText);
+        descriptionField = addView.findViewById(R.id.textInputDescriptionText);
         setHasOptionsMenu(true);
         mListview = (ListView) view.findViewById(R.id.listview);
         presenter = new MenuScreenScreenPresenter(this, getActivity());
@@ -76,28 +82,21 @@ public class MenuScreen extends Fragment implements IPizzaAppMVP.IMenuScreen {
         mListview.setAdapter(arrayAdapter);
     }
 
-    //TODO replace with add_new_pizza layout
     private void addPizzaDialog(){
-        //EditText nameField = addView.findViewById(R.id.textInputNameText);
-        //EditText descriptionField = addView.findViewById(R.id.textInputDescriptionText);
-        //LinearLayout inputFieldsLayout = addView.findViewById(R.id.linLayout);
-        EditText textInputNameText = new EditText(getActivity());
-        textInputNameText.setHint(R.string.name);
-        EditText textInputDescriptionText = new EditText(getActivity());
-        textInputDescriptionText.setHint(R.string.description);
-        LinearLayout linLay = new LinearLayout(getActivity());
-        linLay.setOrientation(LinearLayout.VERTICAL);
-        linLay.addView(textInputNameText);
-        linLay.addView(textInputDescriptionText);
+        if(inputFieldsLayout != null && inputFieldsLayout.getParent() != null){
+            ((ViewGroup)inputFieldsLayout.getParent()).removeView(inputFieldsLayout);
+        }
+        nameField.setText("");
+        descriptionField.setText("");
         new AlertDialog.Builder(getActivity())
             .setTitle(R.string.addNewPizza)
-            .setView(linLay)
+            .setView(inputFieldsLayout)
             .setMessage(R.string.message)
             .setCancelable(false)
             .setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    String message = presenter.addPizza((textInputNameText.getText().toString()), (textInputDescriptionText.getText().toString()));
+                    String message = presenter.addPizza((nameField.getText().toString()), (descriptionField.getText().toString()));
                     Toast toast = Toast.makeText(getContext(), message, Toast.LENGTH_LONG);
                     toast.show();
                 }

@@ -1,11 +1,13 @@
 package com.view;
 
+import com.model.helpers.RowItem;
+
 import java.util.List;
 
 public interface IPizzaAppMVP {
 
     interface IMenuScreen {
-        void setDataToListview(List<String> categoriesToList);
+        void setDataToListview(List<RowItem> categoriesToList);
     }
 
     interface IMenuScreenPresenter {

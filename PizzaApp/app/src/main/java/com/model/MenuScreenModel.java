@@ -3,6 +3,9 @@ package com.model;
 import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.ViewModel;
 
+import com.model.database.DatabaseHelper;
+import com.model.helpers.RowItem;
+
 import java.util.List;
 
 public class MenuScreenModel extends ViewModel {
@@ -12,7 +15,7 @@ public class MenuScreenModel extends ViewModel {
         databaseHelper = new DatabaseHelper(activity);
     }
 
-    public List<String> getListFromDatabase() {
+    public List<RowItem> getListFromDatabase() {
         return databaseHelper.getAll();
     }
 
@@ -23,5 +26,9 @@ public class MenuScreenModel extends ViewModel {
 
     public String getDescription(String name){
         return databaseHelper.getDescription(databaseHelper.getReadableDatabase(), name);
+    }
+
+    public int getImage(String name){
+        return databaseHelper.getImage(databaseHelper.getReadableDatabase(), name);
     }
 }

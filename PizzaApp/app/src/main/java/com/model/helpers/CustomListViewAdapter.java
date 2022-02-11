@@ -23,7 +23,6 @@ public class CustomListViewAdapter extends ArrayAdapter<RowItem> {
         this.context = context;
     }
 
-    /*private view holder class*/
     private class ViewHolder {
         ImageView imageView;
         TextView txtTitle;
@@ -44,8 +43,9 @@ public class CustomListViewAdapter extends ArrayAdapter<RowItem> {
             holder = (ViewHolder) convertView.getTag();
         }
         holder.txtTitle.setText(rowItem.getTitle());
-        holder.imageView.setImageResource(rowItem.getImageId());
-
+        if(rowItem.getImageId() != null){
+            holder.imageView.setImageBitmap(rowItem.getImageId());
+        }
         return convertView;
     }
 }

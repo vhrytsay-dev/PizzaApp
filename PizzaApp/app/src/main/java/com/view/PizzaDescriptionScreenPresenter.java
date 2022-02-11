@@ -1,6 +1,7 @@
 package com.view;
 
 import android.app.Activity;
+import android.graphics.Bitmap;
 
 import com.model.DescriptionScreenModel;
 
@@ -12,5 +13,10 @@ public class PizzaDescriptionScreenPresenter implements IPizzaAppMVP.IPizzaDescr
     public PizzaDescriptionScreenPresenter(IPizzaAppMVP.IPizzaDescriptionScreen view, Activity activity){
         this.view = view;
         model = new DescriptionScreenModel(activity);
+    }
+
+    public Bitmap getImage(String name){
+        Bitmap result = model.getImage(name);
+        return result;
     }
 }

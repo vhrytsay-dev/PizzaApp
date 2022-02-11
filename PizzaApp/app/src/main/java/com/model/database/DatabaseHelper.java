@@ -4,8 +4,11 @@ import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.CursorIndexOutOfBoundsException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 
 import com.model.helpers.RowItem;
 import com.pizzaapp.R;
@@ -21,7 +24,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COLUMN_NAME = "name";
     public static final String COLUMN_DESCRIPTION = "description";
     public static final String COLUMN_IMAGE = "image";
-    private int initialImageId = R.drawable.ic_baseline_local_pizza_24;
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME , null, 1);
@@ -31,7 +33,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(
                 "CREATE TABLE IF NOT EXISTS " + TABLE_NAME + "(" + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-                        + COLUMN_NAME + " TEXT," + COLUMN_DESCRIPTION + " TEXT," + COLUMN_IMAGE + " INTEGER)");
+                        + COLUMN_NAME + " TEXT," + COLUMN_DESCRIPTION + " TEXT," + COLUMN_IMAGE + " BLOB)");
         }
 
     @Override
@@ -48,21 +50,32 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cursor.moveToFirst();
 
         while(cursor.isAfterLast() == false){
-            int imgID = cursor.getInt(cursor.getColumnIndex(COLUMN_IMAGE));
-            if(imgID == 0){
-                imgID = initialImageId;
+            byte[] imgID = null;
+            try{
+                imgID = cursor.getBlob(cursor.getColumnIndex(COLUMN_IMAGE));
+            }catch (CursorIndexOutOfBoundsException e){
+                System.out.println(e.getMessage());
+                e.printStackTrace();
             }
             array_list.add(new RowItem(imgID, cursor.getString(cursor.getColumnIndex(COLUMN_NAME))));
             cursor.moveToNext();
         }
+        cursor.close();
         return array_list;
     }
 
-    //TODO Add image to Database
     public void addToList(SQLiteDatabase db, String name, String description) {
         ContentValues values = new ContentValues();
         values.put(DatabaseHelper.COLUMN_NAME, String.valueOf(name));
         values.put(DatabaseHelper.COLUMN_DESCRIPTION, String.valueOf(description));
+        db.insert(TABLE_NAME, null, values);
+    }
+
+    public void addToListWithImage(SQLiteDatabase db, String name, String description, byte[] imagePath) {
+        ContentValues values = new ContentValues();
+        values.put(DatabaseHelper.COLUMN_NAME, String.valueOf(name));
+        values.put(DatabaseHelper.COLUMN_DESCRIPTION, String.valueOf(description));
+        values.put(DatabaseHelper.COLUMN_IMAGE, imagePath);
         db.insert(TABLE_NAME, null, values);
     }
 
@@ -72,13 +85,25 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Cursor cursor =  db.rawQuery( "SELECT " + COLUMN_DESCRIPTION + " FROM " + TABLE_NAME + " WHERE name =\"" + name + "\"", null );
         cursor.moveToFirst();
         description = cursor.getString(cursor.getColumnIndex(COLUMN_DESCRIPTION));
+        cursor.close();
         return StringUtils.isNotEmpty(description)? description : "";
     }
 
     @SuppressLint("Range")
-    public int getImage(SQLiteDatabase db, String name) {
+    public Bitmap getImage(SQLiteDatabase db, String name) {
         Cursor cursor =  db.rawQuery( "SELECT " + COLUMN_IMAGE + " FROM " + TABLE_NAME + " WHERE name =\"" + name + "\"", null );
         cursor.moveToFirst();
-        return cursor.getInt(cursor.getColumnIndex(COLUMN_IMAGE));
+        byte[] bytesImage = null;
+        try{
+            bytesImage = cursor.getBlob(cursor.getColumnIndex(COLUMN_IMAGE));
+            cursor.close();
+        }catch (CursorIndexOutOfBoundsException e){
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
+        if(bytesImage != null){
+             return BitmapFactory.decodeByteArray(bytesImage, 0, bytesImage.length);
+        }
+        return null;
     }
 }

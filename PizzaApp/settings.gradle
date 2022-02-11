@@ -10,6 +10,7 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        maven { url 'https://zendesk.jfrog.io/zendesk/oss-releases-local' }
     }
 }
 rootProject.name = "Pizza App"

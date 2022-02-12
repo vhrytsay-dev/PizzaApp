@@ -17,7 +17,6 @@ public class HomeScreen extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         root = inflater.inflate(R.layout.home_screen_layout, container, false);
-
         return root;
     }
 

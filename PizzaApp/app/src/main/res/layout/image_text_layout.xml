@@ -11,7 +11,7 @@
         android:layout_height="90dp"
         android:layout_margin="10dp"
         android:padding="10dp"
-        app:srcCompat="@drawable/pizza" />
+        app:srcCompat="@drawable/pizza2" />
 
     <TextView
         android:id="@+id/textView"

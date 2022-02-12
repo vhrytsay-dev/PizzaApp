@@ -16,7 +16,6 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
@@ -34,33 +33,33 @@ import zendesk.belvedere.MediaResult;
 
 public class MenuScreen extends Fragment implements IPizzaAppMVP.IMenuScreen {
 
-    private View view;
-    private View addView;
-    private ListView mListview;
+    private View menuView;
+    private View addNewPizzaView;
+    private ListView mListView;
+    private CustomListViewAdapter adapter;
     private MenuScreenPresenter presenter;
     private LinearLayout inputFieldsLayout;
     private EditText nameField;
     private EditText descriptionField;
-    private CustomListViewAdapter adapter;
     private Button addButton;
     private String imagePath;
+    private Callback<List<MediaResult>> callback;
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.menu_screen_layout, container, false);
-        addView = inflater.inflate(R.layout.add_new_pizza_window, container, false);
-        inputFieldsLayout = addView.findViewById(R.id.linLayout);
-        nameField = addView.findViewById(R.id.textInputNameText);
-        descriptionField = addView.findViewById(R.id.textInputDescriptionText);
+        menuView = inflater.inflate(R.layout.menu_screen_layout, container, false);
+        addNewPizzaView = inflater.inflate(R.layout.add_new_pizza_window, container, false);
+        inputFieldsLayout = addNewPizzaView.findViewById(R.id.linLayout);
+        nameField = addNewPizzaView.findViewById(R.id.textInputNameText);
+        descriptionField = addNewPizzaView.findViewById(R.id.textInputDescriptionText);
         setHasOptionsMenu(true);
-        mListview = (ListView) view.findViewById(R.id.listview);
-        presenter = new MenuScreenPresenter(this, getActivity());
+        mListView = (ListView) menuView.findViewById(R.id.listview);
+        presenter = new MenuScreenPresenter(this, getActivity(), getContext());
         presenter.setDataToListview();
-        addButton = addView.findViewById(R.id.addButton);
+        addButton = addNewPizzaView.findViewById(R.id.addButton);
         listViewItemsListener();
-        pickImage();
-        return view;
+        return menuView;
     }
 
     @Override
@@ -80,21 +79,48 @@ public class MenuScreen extends Fragment implements IPizzaAppMVP.IMenuScreen {
 
 
     @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        view = null;
+    public void onDestroy() {
+        super.onDestroy();
+        if(callback != null){
+            callback.cancel();
+        }
+        menuView = null;
     }
 
     @Override
     public void setDataToListview(List<RowItem> categoriesToList) {
-        adapter = new CustomListViewAdapter(view.getContext(), R.layout.image_text_layout, categoriesToList);
-        mListview.setAdapter(adapter);
+        adapter = new CustomListViewAdapter(menuView.getContext(), R.layout.image_text_layout, categoriesToList);
+        mListView.setAdapter(adapter);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        callback = new Callback<List<MediaResult>>() {
+            @Override
+            public void success(List<MediaResult> result) {
+                if(result != null && result.size() > 0){
+                    MediaResult mediaResult = (MediaResult) result.get(0);
+                    File imageFile = mediaResult.getFile();
+                    imagePath = imageFile.getPath();
+                }
+            }
+        };
+        Belvedere.from(getContext()).getFilesFromActivityOnResult(requestCode, resultCode, data, callback);
     }
 
     private void addPizzaDialog(){
         if(inputFieldsLayout != null && inputFieldsLayout.getParent() != null){
             ((ViewGroup)inputFieldsLayout.getParent()).removeView(inputFieldsLayout);
         }
+        addButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Belvedere.from(getContext())
+                        .document()
+                        .open(MenuScreen.this);
+            }
+        });
         nameField.setText("");
         descriptionField.setText("");
         new AlertDialog.Builder(getActivity())
@@ -123,7 +149,7 @@ public class MenuScreen extends Fragment implements IPizzaAppMVP.IMenuScreen {
     }
 
     private void listViewItemsListener() {
-        mListview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(getActivity(), PizzaDescriptionScreen.class);
@@ -132,32 +158,5 @@ public class MenuScreen extends Fragment implements IPizzaAppMVP.IMenuScreen {
                 getActivity().startActivity(intent);
             }
         });
-    }
-
-    private void pickImage(){
-        addButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Belvedere.from(getContext())
-                        .document()
-                        .open(MenuScreen.this);
-            }
-        });
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        Callback<List<MediaResult>> callback = new Callback<List<MediaResult>>() {
-            @Override
-            public void success(List<MediaResult> result) {
-                if(result != null && result.size() > 0){
-                    MediaResult mediaResult = (MediaResult) result.get(0);
-                    File imageFile = mediaResult.getFile();
-                    imagePath = imageFile.getPath();
-                }
-            }
-        };
-        Belvedere.from(getActivity()).getFilesFromActivityOnResult(requestCode, resultCode, data, callback);
     }
     }

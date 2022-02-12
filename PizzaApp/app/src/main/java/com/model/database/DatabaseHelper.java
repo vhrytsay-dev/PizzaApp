@@ -7,8 +7,6 @@ import android.database.Cursor;
 import android.database.CursorIndexOutOfBoundsException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 
 import com.model.helpers.RowItem;
 import com.pizzaapp.R;
@@ -43,9 +41,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     @SuppressLint("Range")
-    public ArrayList<RowItem> getAll() {
+    public ArrayList<RowItem> getAll(SQLiteDatabase db) {
         ArrayList<RowItem> array_list = new ArrayList<>();
-        SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor =  db.rawQuery( "SELECT * FROM " + TABLE_NAME, null );
         cursor.moveToFirst();
 
@@ -86,11 +83,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cursor.moveToFirst();
         description = cursor.getString(cursor.getColumnIndex(COLUMN_DESCRIPTION));
         cursor.close();
-        return StringUtils.isNotEmpty(description)? description : "";
+        return description;
     }
 
     @SuppressLint("Range")
-    public Bitmap getImage(SQLiteDatabase db, String name) {
+    public byte[] getImage(SQLiteDatabase db, String name) {
         Cursor cursor =  db.rawQuery( "SELECT " + COLUMN_IMAGE + " FROM " + TABLE_NAME + " WHERE name =\"" + name + "\"", null );
         cursor.moveToFirst();
         byte[] bytesImage = null;
@@ -101,9 +98,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             System.out.println(e.getMessage());
             e.printStackTrace();
         }
-        if(bytesImage != null){
-             return BitmapFactory.decodeByteArray(bytesImage, 0, bytesImage.length);
-        }
-        return null;
+        return bytesImage;
     }
 }

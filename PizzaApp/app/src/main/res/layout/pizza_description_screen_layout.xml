@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical"
     tools:context="com.view.PizzaDescriptionScreen">
 
@@ -13,18 +13,19 @@
         android:layout_height="150dp"
         android:layout_gravity="center"
         android:layout_margin="20dp"
-        app:srcCompat="@drawable/pizza" />
+        app:srcCompat="@drawable/pizza2" />
 
     <TextView
         android:id="@+id/descriptText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="368dp"
+        android:layout_margin="10dp"
         android:padding="20dp"
-        android:text="TextView"
         android:textSize="20sp"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent" />
+
 </LinearLayout>

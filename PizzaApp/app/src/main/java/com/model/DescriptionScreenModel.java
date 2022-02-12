@@ -18,6 +18,10 @@ public class DescriptionScreenModel extends ViewModel {
     }
 
     public Bitmap getImage(String name){
-        return databaseHelper.getImage(databaseHelper.getReadableDatabase(), name);
+        byte [] bytesImage = databaseHelper.getImage(databaseHelper.getReadableDatabase(), name);
+        if(bytesImage != null){
+            return BitmapFactory.decodeByteArray(bytesImage, 0, bytesImage.length);
+        }
+        return null;
     }
 }

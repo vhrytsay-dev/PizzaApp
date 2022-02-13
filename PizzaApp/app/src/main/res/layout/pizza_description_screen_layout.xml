@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    tools:context="com.view.PizzaDescriptionScreen">
+    tools:context="com.view.DescriptionScreen">
 
     <ImageView
         android:id="@+id/imageView2"

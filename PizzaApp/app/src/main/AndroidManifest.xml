@@ -13,7 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.PizzaApp">
         <activity
-            android:name="com.view.PizzaDescriptionScreen"
+            android:name="com.view.DescriptionScreen"
             android:exported="false" />
         <activity
             android:name="com.view.BottomNavigationActivity"

@@ -15,12 +15,14 @@ import java.util.List;
 
 public class CustomListViewAdapter extends ArrayAdapter<RowItem> {
 
-    Context context;
+    private Context context;
+    private LayoutInflater mInflater;
 
     public CustomListViewAdapter(Context context, int resourceId,
                                  List<RowItem> items) {
         super(context, resourceId, items);
         this.context = context;
+        mInflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
     }
 
     private class ViewHolder {
@@ -31,8 +33,6 @@ public class CustomListViewAdapter extends ArrayAdapter<RowItem> {
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder holder = null;
         RowItem rowItem = getItem(position);
-
-        LayoutInflater mInflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
         if (convertView == null) {
             convertView = mInflater.inflate(R.layout.image_text_layout, null);
             holder = new ViewHolder();

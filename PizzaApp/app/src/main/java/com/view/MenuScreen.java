@@ -14,15 +14,19 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import com.model.helpers.CustomListViewAdapter;
 import com.model.helpers.RowItem;
 import com.pizzaapp.R;
+
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
 import java.util.List;
@@ -44,6 +48,7 @@ public class MenuScreen extends Fragment implements IPizzaAppMVP.IMenuScreen {
     private Button addButton;
     private String imagePath;
     private Callback<List<MediaResult>> callback;
+    private TextView imageFileName;
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -59,6 +64,10 @@ public class MenuScreen extends Fragment implements IPizzaAppMVP.IMenuScreen {
         presenter.setDataToListview();
         addButton = addNewPizzaView.findViewById(R.id.addButton);
         listViewItemsListener();
+        imageFileName = addNewPizzaView.findViewById(R.id.imageFileName);
+        if (((AppCompatActivity)getActivity()).getSupportActionBar() != null) {
+            ((AppCompatActivity)getActivity()).getSupportActionBar().show();
+        }
         return menuView;
     }
 
@@ -85,6 +94,8 @@ public class MenuScreen extends Fragment implements IPizzaAppMVP.IMenuScreen {
             callback.cancel();
         }
         menuView = null;
+        imagePath = null;
+        imageFileName.setText(StringUtils.EMPTY);
     }
 
     @Override
@@ -103,6 +114,11 @@ public class MenuScreen extends Fragment implements IPizzaAppMVP.IMenuScreen {
                     MediaResult mediaResult = (MediaResult) result.get(0);
                     File imageFile = mediaResult.getFile();
                     imagePath = imageFile.getPath();
+                    if(imageFileName != null){
+                        imageFileName.setText(imageFile.getName());
+                    } else {
+                        imageFileName = (TextView) addNewPizzaView.findViewById(R.id.imageFileName);
+                    }
                 }
             }
         };
@@ -135,8 +151,10 @@ public class MenuScreen extends Fragment implements IPizzaAppMVP.IMenuScreen {
                     if(imagePath != null){
                         message = presenter.addPizzaWithImage((nameField.getText().toString()), (descriptionField.getText().toString()), imagePath);
                         imagePath = null;
+                        imageFileName.setText(StringUtils.EMPTY);
                     }else {
                         message = presenter.addPizza((nameField.getText().toString()), (descriptionField.getText().toString()));
+                        imageFileName = null;
                     }
                     Toast toast = Toast.makeText(getContext(), message, Toast.LENGTH_LONG);
                     toast.show();
@@ -144,6 +162,8 @@ public class MenuScreen extends Fragment implements IPizzaAppMVP.IMenuScreen {
             }).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                imagePath = null;
+                imageFileName.setText(StringUtils.EMPTY);
             }
         }).show();
     }
@@ -152,7 +172,7 @@ public class MenuScreen extends Fragment implements IPizzaAppMVP.IMenuScreen {
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(getActivity(), PizzaDescriptionScreen.class);
+                Intent intent = new Intent(getActivity(), DescriptionScreen.class);
                 intent.putExtra("name", parent.getItemAtPosition(position).toString());
                 intent.putExtra("description", presenter.getDescription(((RowItem) parent.getItemAtPosition(position)).getTitle()));
                 getActivity().startActivity(intent);

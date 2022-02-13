@@ -1,8 +1,10 @@
 package com.view;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.pizzaapp.R;
@@ -19,6 +21,17 @@ public class PizzaDescriptionScreen extends AppCompatActivity implements IPizzaA
         descriptText = (TextView) findViewById(R.id.descriptText);
         presenter = new PizzaDescriptionScreenPresenter(this, this);
         showPizzaData(getIntent().getStringExtra("name"), getIntent().getStringExtra("description"));
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                this.finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void showPizzaData(String name, String description) {

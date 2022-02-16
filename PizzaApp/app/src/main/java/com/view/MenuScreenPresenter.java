@@ -48,15 +48,12 @@ public class MenuScreenPresenter implements IPizzaAppMVP.IMenuScreenPresenter {
         }
     }
 
-    public String getDescription(String name){
-        if(StringUtils.isNotBlank(name)){
-            return menuModel.getDescription(name);
-        }
-        return StringUtils.EMPTY;
+    public String getDescription(int id){
+        return menuModel.getDescription(id);
     }
 
-    public Bitmap getImage(String name){
-        Bitmap result = menuModel.getImage(name);
+    public Bitmap getImage(int id){
+        Bitmap result = menuModel.getImage(id);
         return result;
     }
 }

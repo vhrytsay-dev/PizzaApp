@@ -6,21 +6,19 @@ import android.graphics.BitmapFactory;
 
 import androidx.lifecycle.ViewModel;
 
-import com.model.database.DatabaseHelper;
-
-import java.io.ByteArrayOutputStream;
+import com.model.database.RoomDB;
 
 public class DescriptionScreenModel extends ViewModel {
-    private DatabaseHelper databaseHelper;
+    private RoomDB databaseHelper;
 
     public DescriptionScreenModel(Activity activity) {
-        databaseHelper = new DatabaseHelper(activity);
+        databaseHelper = RoomDB.getInstance(activity);
     }
 
-    public Bitmap getImage(String name){
-        byte [] bytesImage = databaseHelper.getImage(databaseHelper.getReadableDatabase(), name);
-        if(bytesImage != null){
-            return BitmapFactory.decodeByteArray(bytesImage, 0, bytesImage.length);
+    public Bitmap getImage(int id){
+        byte[] result = databaseHelper.mainDao().getImage(id);
+        if(result != null){
+            return BitmapFactory.decodeByteArray(result, 0, result.length);
         }
         return null;
     }

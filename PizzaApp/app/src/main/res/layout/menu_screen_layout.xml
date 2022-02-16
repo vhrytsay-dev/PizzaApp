@@ -7,9 +7,9 @@
     android:orientation="vertical"
     tools:context="com.view.MenuScreen">
 
-        <ListView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/listview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/dp_55"></ListView>
+            android:layout_marginBottom="@dimen/dp_55"></androidx.recyclerview.widget.RecyclerView>
 </LinearLayout>

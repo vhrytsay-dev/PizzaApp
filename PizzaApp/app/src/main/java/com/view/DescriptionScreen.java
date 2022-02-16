@@ -7,6 +7,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -16,6 +18,7 @@ public class DescriptionScreen extends AppCompatActivity implements IPizzaAppMVP
     private TextView descriptionText;
     private DescriptionScreenPresenter presenter;
     private ImageView imageView;
+    private ImageButton like;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,7 +27,13 @@ public class DescriptionScreen extends AppCompatActivity implements IPizzaAppMVP
         imageView = (ImageView) findViewById(R.id.imageView2);
         descriptionText = (TextView) findViewById(R.id.descriptText);
         presenter = new DescriptionScreenPresenter(this, this);
-        showPizzaData(getIntent().getStringExtra("name"), getIntent().getStringExtra("description"));
+        like = findViewById(R.id.like);
+        like.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+            }
+        });
+        showPizzaData(getIntent().getStringExtra("name"), getIntent().getIntExtra("id", 0), getIntent().getStringExtra("description"));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
@@ -38,12 +47,13 @@ public class DescriptionScreen extends AppCompatActivity implements IPizzaAppMVP
         return super.onOptionsItemSelected(item);
     }
 
+    //TODO Die getImageId Fixen!!!
     @SuppressLint("SdCardPath")
-    private void showPizzaData(String name, String description) {
+    private void showPizzaData(String name, int id, String description) {
         getSupportActionBar().setTitle(name);
         descriptionText.setText(description);
-        if(presenter.getImage(name) != null){
-            imageView.setImageBitmap(presenter.getImage(name));
+        if(presenter.getImage(id) != null){
+            imageView.setImageBitmap(presenter.getImage(id));
         }
     }
 }

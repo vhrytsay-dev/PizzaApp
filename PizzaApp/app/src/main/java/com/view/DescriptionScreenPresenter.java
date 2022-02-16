@@ -15,8 +15,7 @@ public class DescriptionScreenPresenter implements IPizzaAppMVP.IPizzaDescriptio
         model = new DescriptionScreenModel(activity);
     }
 
-    public Bitmap getImage(String name){
-        Bitmap result = model.getImage(name);
-        return result;
+    public Bitmap getImage(int id){
+        return model.getImage(id);
     }
 }

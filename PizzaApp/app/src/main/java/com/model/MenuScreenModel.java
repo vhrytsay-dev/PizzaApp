@@ -6,26 +6,27 @@ import android.graphics.BitmapFactory;
 import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.ViewModel;
 
-import com.model.database.DatabaseHelper;
+import com.model.database.RoomDB;
+import com.model.database.RowItemAdapter;
 import com.model.helpers.RowItem;
 
-import org.apache.commons.lang3.StringUtils;
 import java.io.ByteArrayOutputStream;
 import java.util.List;
 
 public class MenuScreenModel extends ViewModel {
-    private DatabaseHelper databaseHelper;
+    private RoomDB database;
+    private RowItemAdapter adapter;
 
     public MenuScreenModel(FragmentActivity activity) {
-        databaseHelper = new DatabaseHelper(activity);
+        database = RoomDB.getInstance(activity);
     }
 
     public List<RowItem> getListFromDatabase() {
-        return databaseHelper.getAll(databaseHelper.getReadableDatabase());
+        return database.mainDao().getAll();
     }
 
     public void addToList(String name, String description){
-        databaseHelper.addToList(databaseHelper.getWritableDatabase(), name, description);
+        database.mainDao().insert(new RowItem(name, description, null));
     }
 
     public void addToListWithImage(String name, String description, String imagePath){
@@ -33,19 +34,16 @@ public class MenuScreenModel extends ViewModel {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG, 0, byteArrayOutputStream);
         byte[] bytesImage = byteArrayOutputStream.toByteArray();
-        databaseHelper.addToListWithImage(databaseHelper.getWritableDatabase(), name, description, bytesImage);
+        database.mainDao().insert(new RowItem(name, description, bytesImage));
     }
 
-    public String getDescription(String name){
-        String description = databaseHelper.getDescription(databaseHelper.getReadableDatabase(), name);
-        return StringUtils.isNotEmpty(description)? description : "";
+    public String getDescription(int id){
+        database.mainDao().getDescription(id);
+        return null;
     }
 
-    public Bitmap getImage(String name){
-        byte [] bytesImage = databaseHelper.getImage(databaseHelper.getReadableDatabase(), name);
-        if(bytesImage != null){
-            return BitmapFactory.decodeByteArray(bytesImage, 0, bytesImage.length);
-        }
+    public Bitmap getImage(int id){
+        database.mainDao().getImage(id);
         return null;
     }
 }

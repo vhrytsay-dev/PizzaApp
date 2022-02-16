@@ -16,8 +16,8 @@ public interface IPizzaAppMVP {
         void setDataToListview();
         String addPizza(String name, String description);
         String addPizzaWithImage(String name, String description, String stringFilePath);
-        String getDescription(String name);
-        Bitmap getImage(String name);
+        String getDescription(int id);
+        Bitmap getImage(int id);
     }
 
     interface IPizzaDescriptionScreen {

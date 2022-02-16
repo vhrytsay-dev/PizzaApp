@@ -9,11 +9,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,8 +19,10 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-import com.model.helpers.CustomListViewAdapter;
+import com.model.database.RowItemAdapter;
 import com.model.helpers.RowItem;
 import com.pizzaapp.R;
 
@@ -39,8 +39,8 @@ public class MenuScreen extends Fragment implements IPizzaAppMVP.IMenuScreen {
 
     private View menuView;
     private View addNewPizzaView;
-    private ListView mListView;
-    private CustomListViewAdapter adapter;
+    private RecyclerView mListView;
+    private RowItemAdapter adapter;
     private MenuScreenPresenter presenter;
     private LinearLayout inputFieldsLayout;
     private EditText nameField;
@@ -49,6 +49,7 @@ public class MenuScreen extends Fragment implements IPizzaAppMVP.IMenuScreen {
     private String imagePath;
     private Callback<List<MediaResult>> callback;
     private TextView imageFileName;
+    LinearLayoutManager linearLayoutManager;
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -59,15 +60,17 @@ public class MenuScreen extends Fragment implements IPizzaAppMVP.IMenuScreen {
         nameField = addNewPizzaView.findViewById(R.id.textInputNameText);
         descriptionField = addNewPizzaView.findViewById(R.id.textInputDescriptionText);
         setHasOptionsMenu(true);
-        mListView = (ListView) menuView.findViewById(R.id.listview);
+        mListView = (RecyclerView) menuView.findViewById(R.id.listview);
         presenter = new MenuScreenPresenter(this, getActivity(), getContext());
         presenter.setDataToListview();
         addButton = addNewPizzaView.findViewById(R.id.addButton);
-        listViewItemsListener();
+        //listViewItemsListener();
         imageFileName = addNewPizzaView.findViewById(R.id.imageFileName);
         if (((AppCompatActivity)getActivity()).getSupportActionBar() != null) {
             ((AppCompatActivity)getActivity()).getSupportActionBar().show();
         }
+        linearLayoutManager = new LinearLayoutManager(getContext());
+        mListView.setLayoutManager(linearLayoutManager);
         return menuView;
     }
 
@@ -100,7 +103,7 @@ public class MenuScreen extends Fragment implements IPizzaAppMVP.IMenuScreen {
 
     @Override
     public void setDataToListview(List<RowItem> categoriesToList) {
-        adapter = new CustomListViewAdapter(menuView.getContext(), R.layout.image_text_layout, categoriesToList);
+        adapter = new RowItemAdapter(getActivity(), categoriesToList);
         mListView.setAdapter(adapter);
     }
 
@@ -151,10 +154,8 @@ public class MenuScreen extends Fragment implements IPizzaAppMVP.IMenuScreen {
                     if(imagePath != null){
                         message = presenter.addPizzaWithImage((nameField.getText().toString()), (descriptionField.getText().toString()), imagePath);
                         imagePath = null;
-                        imageFileName.setText(StringUtils.EMPTY);
                     }else {
                         message = presenter.addPizza((nameField.getText().toString()), (descriptionField.getText().toString()));
-                        imageFileName = null;
                     }
                     Toast toast = Toast.makeText(getContext(), message, Toast.LENGTH_LONG);
                     toast.show();
@@ -163,20 +164,7 @@ public class MenuScreen extends Fragment implements IPizzaAppMVP.IMenuScreen {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 imagePath = null;
-                imageFileName.setText(StringUtils.EMPTY);
             }
         }).show();
-    }
-
-    private void listViewItemsListener() {
-        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(getActivity(), DescriptionScreen.class);
-                intent.putExtra("name", parent.getItemAtPosition(position).toString());
-                intent.putExtra("description", presenter.getDescription(((RowItem) parent.getItemAtPosition(position)).getTitle()));
-                getActivity().startActivity(intent);
-            }
-        });
     }
     }

@@ -1,7 +1,6 @@
 package com.view;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
@@ -33,7 +32,7 @@ public class DescriptionScreen extends AppCompatActivity implements IPizzaAppMVP
             public void onClick(View v) {
             }
         });
-        showPizzaData(getIntent().getStringExtra("name"), getIntent().getIntExtra("id", 0), getIntent().getStringExtra("description"));
+        showPizzaData(getIntent().getStringExtra("name"), getIntent().getIntExtra("imageId", 0), getIntent().getStringExtra("description"));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
@@ -47,7 +46,6 @@ public class DescriptionScreen extends AppCompatActivity implements IPizzaAppMVP
         return super.onOptionsItemSelected(item);
     }
 
-    //TODO Die getImageId Fixen!!!
     @SuppressLint("SdCardPath")
     private void showPizzaData(String name, int id, String description) {
         getSupportActionBar().setTitle(name);

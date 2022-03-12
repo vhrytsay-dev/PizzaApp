@@ -53,6 +53,7 @@ public class RowItemAdapter extends RecyclerView.Adapter<RowItemAdapter.ViewHold
                 Intent intent = new Intent(activity, DescriptionScreen.class);
                 intent.putExtra("name", position);
                 intent.putExtra("description", database.mainDao().getDescription(position+1));
+                intent.putExtra("imageId", position+1);
                 activity.startActivity(intent);
             }
         });

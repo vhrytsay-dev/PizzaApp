@@ -74,6 +74,11 @@ public class MenuScreen extends Fragment implements IPizzaAppMVP.IMenuScreen {
         return menuView;
     }
 
+    public void onResume() {
+        super.onResume();
+        presenter.setDataToListview();
+    }
+
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.add_button_menu, menu);

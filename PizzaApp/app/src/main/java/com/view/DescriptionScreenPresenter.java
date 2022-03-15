@@ -18,4 +18,8 @@ public class DescriptionScreenPresenter implements IPizzaAppMVP.IPizzaDescriptio
     public Bitmap getImage(int id){
         return model.getImage(id);
     }
+
+    public void setFavourite(int id){
+        model.setFavourite(id);
+    }
 }

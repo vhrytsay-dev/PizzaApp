@@ -17,6 +17,8 @@ public class RowItem {
     private String title;
     @ColumnInfo(name = "description")
     private String description;
+    @ColumnInfo(name = "favourite")
+    private boolean favourite;
 
     public RowItem(String title, String description, byte[] imageId) {
         this.imageId = imageId;
@@ -25,7 +27,6 @@ public class RowItem {
     }
     public byte[] getImageId() {
         return imageId;
-            //return BitmapFactory.decodeByteArray(imageId, 0, imageId.length);
     }
 
     public void setImageId(byte[] imageId) {
@@ -56,5 +57,13 @@ public class RowItem {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public boolean isFavourite() {
+        return favourite;
+    }
+
+    public void setFavourite(boolean favorite) {
+        this.favourite = favorite;
     }
 }

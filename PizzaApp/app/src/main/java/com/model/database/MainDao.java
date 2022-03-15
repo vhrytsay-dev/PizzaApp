@@ -32,9 +32,18 @@ public interface MainDao {
     @Query("SELECT * FROM table_name")
     List<RowItem> getAll();
 
+    @Query("SELECT title FROM table_name WHERE ID = :id")
+    String getTitle(int id);
+
     @Query("SELECT description FROM table_name WHERE ID = :id")
     String getDescription(int id);
 
     @Query("SELECT imageId FROM table_name WHERE ID =:id")
     byte[] getImage(int id);
+
+    @Query("UPDATE table_name SET favourite =:sLike WHERE ID = :sID")
+    void update(int sID, boolean sLike);
+
+    @Query("SELECT favourite FROM table_name WHERE ID =:sID")
+    boolean getFavourite(int sID);
 }

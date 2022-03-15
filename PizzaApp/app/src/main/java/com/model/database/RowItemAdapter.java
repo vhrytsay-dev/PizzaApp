@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,6 +40,7 @@ public class RowItemAdapter extends RecyclerView.Adapter<RowItemAdapter.ViewHold
         return new ViewHolder(view);
     }
 
+    @SuppressLint("ResourceAsColor")
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, @SuppressLint("RecyclerView") int position) {
         RowItem rowItem = rowItemList.get(position);
@@ -47,13 +49,19 @@ public class RowItemAdapter extends RecyclerView.Adapter<RowItemAdapter.ViewHold
         if(rowItem.getImageId() != null){
             holder.imageView.setImageBitmap(BitmapFactory.decodeByteArray(rowItem.getImageId(), 0, rowItem.getImageId().length));
         }
+        if(rowItem.isFavourite()){
+            holder.itemView.setBackgroundColor(R.color.divider);
+        }else {
+            holder.itemView.setBackgroundColor(Color.TRANSPARENT);
+        }
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(activity, DescriptionScreen.class);
-                intent.putExtra("name", position);
+                intent.putExtra("name", database.mainDao().getTitle(position+1));
                 intent.putExtra("description", database.mainDao().getDescription(position+1));
                 intent.putExtra("imageId", position+1);
+                intent.putExtra("position", position+1);
                 activity.startActivity(intent);
             }
         });

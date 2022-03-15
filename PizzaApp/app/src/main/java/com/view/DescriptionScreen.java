@@ -30,6 +30,7 @@ public class DescriptionScreen extends AppCompatActivity implements IPizzaAppMVP
         like.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                presenter.setFavourite(getIntent().getIntExtra("position", -1));
             }
         });
         showPizzaData(getIntent().getStringExtra("name"), getIntent().getIntExtra("imageId", 0), getIntent().getStringExtra("description"));

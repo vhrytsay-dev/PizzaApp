@@ -22,4 +22,9 @@ public class DescriptionScreenModel extends ViewModel {
         }
         return null;
     }
+
+    public void setFavourite(int id) {
+        boolean test = databaseHelper.mainDao().getFavourite(id);
+        databaseHelper.mainDao().update(id, !test);
+    }
 }

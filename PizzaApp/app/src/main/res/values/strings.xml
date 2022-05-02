@@ -11,4 +11,7 @@
     <string name="description">Description</string>
     <string name="save">Save</string>
     <string name="cancel">Cancel</string>
+    <string name="addImage">Add Image</string>
+    <string name="enterName">Please enter Pizza name</string>
+    <string name="pizzaAddedText">Pizza  %s  added to List</string>
 </resources>

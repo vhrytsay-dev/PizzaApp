@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import com.pizzaapp.R;
@@ -17,7 +18,9 @@ public class HomeScreen extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         root = inflater.inflate(R.layout.home_screen_layout, container, false);
-
+        if (((AppCompatActivity)getActivity()).getSupportActionBar() != null) {
+            ((AppCompatActivity)getActivity()).getSupportActionBar().hide();
+        }
         return root;
     }
 

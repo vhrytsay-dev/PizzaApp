@@ -1,6 +1,5 @@
 package com.view;
 
-import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,48 +9,74 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.textfield.TextInputEditText;
+import com.model.database.RowItemAdapter;
+import com.model.helpers.RowItem;
 import com.pizzaapp.R;
 
 import org.apache.commons.lang3.StringUtils;
 
+import java.io.File;
 import java.util.List;
+
+import zendesk.belvedere.Belvedere;
+import zendesk.belvedere.Callback;
+import zendesk.belvedere.MediaResult;
 
 public class MenuScreen extends Fragment implements IPizzaAppMVP.IMenuScreen {
 
-    private ArrayAdapter<String> arrayAdapter;
-    private View view;
-    private View addView;
-    private ListView mListview;
-    private MenuScreenScreenPresenter presenter;
+    private View menuView;
+    private View addNewPizzaView;
+    private RecyclerView mListView;
+    private RowItemAdapter adapter;
+    private MenuScreenPresenter presenter;
     private LinearLayout inputFieldsLayout;
     private EditText nameField;
     private EditText descriptionField;
+    private Button addButton;
+    private String imagePath;
+    private Callback<List<MediaResult>> callback;
+    private TextView imageFileName;
+    LinearLayoutManager linearLayoutManager;
+
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.menu_screen_layout, container, false);
-        addView = inflater.inflate(R.layout.add_new_pizza_window, container, false);
-        inputFieldsLayout = addView.findViewById(R.id.linLayout);
-        nameField = addView.findViewById(R.id.textInputNameText);
-        descriptionField = addView.findViewById(R.id.textInputDescriptionText);
+        menuView = inflater.inflate(R.layout.menu_screen_layout, container, false);
+        addNewPizzaView = inflater.inflate(R.layout.add_new_pizza_window, container, false);
+        inputFieldsLayout = addNewPizzaView.findViewById(R.id.linLayout);
+        nameField = addNewPizzaView.findViewById(R.id.textInputNameText);
+        descriptionField = addNewPizzaView.findViewById(R.id.textInputDescriptionText);
         setHasOptionsMenu(true);
-        mListview = (ListView) view.findViewById(R.id.listview);
-        presenter = new MenuScreenScreenPresenter(this, getActivity());
+        mListView = (RecyclerView) menuView.findViewById(R.id.listview);
+        presenter = new MenuScreenPresenter(this, getActivity(), getContext());
         presenter.setDataToListview();
-        listViewItemsListener();
-        return view;
+        addButton = addNewPizzaView.findViewById(R.id.addButton);
+        //listViewItemsListener();
+        imageFileName = addNewPizzaView.findViewById(R.id.imageFileName);
+        if (((AppCompatActivity)getActivity()).getSupportActionBar() != null) {
+            ((AppCompatActivity)getActivity()).getSupportActionBar().show();
+        }
+        linearLayoutManager = new LinearLayoutManager(getContext());
+        mListView.setLayoutManager(linearLayoutManager);
+        return menuView;
+    }
+
+    public void onResume() {
+        super.onResume();
+        presenter.setDataToListview();
     }
 
     @Override
@@ -71,21 +96,55 @@ public class MenuScreen extends Fragment implements IPizzaAppMVP.IMenuScreen {
 
 
     @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        view = null;
+    public void onDestroy() {
+        super.onDestroy();
+        if(callback != null){
+            callback.cancel();
+        }
+        menuView = null;
+        imagePath = null;
+        imageFileName.setText(StringUtils.EMPTY);
     }
 
     @Override
-    public void setDataToListview(List<String> categoriesToList) {
-        arrayAdapter = new ArrayAdapter<>(view.getContext(), android.R.layout.simple_list_item_1, categoriesToList);
-        mListview.setAdapter(arrayAdapter);
+    public void setDataToListview(List<RowItem> categoriesToList) {
+        adapter = new RowItemAdapter(getActivity(), categoriesToList);
+        mListView.setAdapter(adapter);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        callback = new Callback<List<MediaResult>>() {
+            @Override
+            public void success(List<MediaResult> result) {
+                if(result != null && result.size() > 0){
+                    MediaResult mediaResult = (MediaResult) result.get(0);
+                    File imageFile = mediaResult.getFile();
+                    imagePath = imageFile.getPath();
+                    if(imageFileName != null){
+                        imageFileName.setText(imageFile.getName());
+                    } else {
+                        imageFileName = (TextView) addNewPizzaView.findViewById(R.id.imageFileName);
+                    }
+                }
+            }
+        };
+        Belvedere.from(getContext()).getFilesFromActivityOnResult(requestCode, resultCode, data, callback);
     }
 
     private void addPizzaDialog(){
         if(inputFieldsLayout != null && inputFieldsLayout.getParent() != null){
             ((ViewGroup)inputFieldsLayout.getParent()).removeView(inputFieldsLayout);
         }
+        addButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Belvedere.from(getContext())
+                        .document()
+                        .open(MenuScreen.this);
+            }
+        });
         nameField.setText("");
         descriptionField.setText("");
         new AlertDialog.Builder(getActivity())
@@ -96,26 +155,21 @@ public class MenuScreen extends Fragment implements IPizzaAppMVP.IMenuScreen {
             .setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    String message = presenter.addPizza((nameField.getText().toString()), (descriptionField.getText().toString()));
+                    String message;
+                    if(imagePath != null){
+                        message = presenter.addPizzaWithImage((nameField.getText().toString()), (descriptionField.getText().toString()), imagePath);
+                        imagePath = null;
+                    }else {
+                        message = presenter.addPizza((nameField.getText().toString()), (descriptionField.getText().toString()));
+                    }
                     Toast toast = Toast.makeText(getContext(), message, Toast.LENGTH_LONG);
                     toast.show();
                 }
             }).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                imagePath = null;
             }
         }).show();
     }
-
-    private void listViewItemsListener() {
-        mListview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(getActivity(), PizzaDescriptionScreen.class);
-                intent.putExtra("name", parent.getItemAtPosition(position).toString());
-                intent.putExtra("description", presenter.getDescription(parent.getItemAtPosition(position).toString()));
-                getActivity().startActivity(intent);
-            }
-        });
     }
-}

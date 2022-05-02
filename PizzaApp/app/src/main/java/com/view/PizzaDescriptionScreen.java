@@ -11,7 +11,7 @@ import com.pizzaapp.R;
 
 public class PizzaDescriptionScreen extends AppCompatActivity implements IPizzaAppMVP.IPizzaDescriptionScreen{
     private TextView descriptText;
-    PizzaDescriptionScreenPresenter presenter;
+    DescriptionScreenPresenter presenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,7 +19,7 @@ public class PizzaDescriptionScreen extends AppCompatActivity implements IPizzaA
         setContentView(R.layout.pizza_description_screen_layout);
 
         descriptText = (TextView) findViewById(R.id.descriptText);
-        presenter = new PizzaDescriptionScreenPresenter(this, this);
+        presenter = new DescriptionScreenPresenter(this, this);
         showPizzaData(getIntent().getStringExtra("name"), getIntent().getStringExtra("description"));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }

@@ -1,3 +1,3 @@
 # PizzaApp
 # 🎬Preview
-![](https://github.com/vhrytsay-dev/PizzaApp/edit/master/preview/pizzaApp.gif)
+![](https://github.com/vhrytsay-dev/PizzaApp/blob/master/PizzaApp/preview/pizzaApp.gif)
